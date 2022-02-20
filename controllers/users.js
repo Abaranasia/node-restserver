@@ -1,5 +1,9 @@
 
 const { response, request } = require('express');
+const bcryptjs = require('bcryptjs');
+
+const User = require('../models/user');
+
 
 const usersGet = (req = request, res = response) => {
   const query = req.query; // Reading optional query URLparams with Express (already parsed)
@@ -10,15 +14,24 @@ const usersGet = (req = request, res = response) => {
   });
 }
 
-const usersPost = (req = request, res = response) => {
+const usersPost = async (req = request, res = response) => {
   //const body = req.body;
   // It's a best practice to destructure the incoming data, as we can filter and limit the input
-  const { name, age } = req.body;
+  // Mongoose will filter the body input based on the model and reject incomming date not matching the model
+  const { name, email, password, role } = req.body;
+  const user = new User({ name, email, password, role });
+
+  // Verify email
+
+  // Encrypt password
+  const salt = bcryptjs.genSaltSync();
+  user.password = bcryptjs.hashSync(password, salt);
+
+  await user.save(); // This will actually save the data in the DB
 
   res.status(200).json({
     msg: 'post API',
-    name,
-    age
+    user
   });
 }
 
