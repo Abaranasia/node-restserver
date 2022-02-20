@@ -4,47 +4,43 @@ const cors = require('cors');
 
 class Server {
 
-    constructor() {
-        this.app = express();
-        this.port = process.env.PORT;
-        this.usersPath= '/api/users';
-      
-        //Middlewares
-        this.middlewares();
+  constructor() {
+    this.app = express();
+    this.port = process.env.PORT;
+    this.usersPath = '/api/users';
 
-        //Routes
-        this.routes();
-    };
+    //Middlewares - introduces additional functionalities between the req and the res
+    this.middlewares();
 
-    middlewares() {
-        // For using cors to protect our routes
-        this.app.use(cors());
+    //Routes - define the way to enroute the website
+    this.routes();
+  };
 
-        // Exposing the public directory
-        this.app.use(express.static('public'));
-    }
+  middlewares() {
+    // For using cors to protect our routes
+    this.app.use(cors());
 
-    routes() {
+    // Read and parse of the body to json format
+    this.app.use(express.json())
 
-      // The routes can be defined here, but it's more clear to extract them to routes folder
-      /* this.app.get('/api', (req, res) => { 
-        res.status(200).json({
-          msg: 'get API'
-        })
-      }); */
+    // Exposing the public directory
+    this.app.use(express.static('public'));
+  }
 
-      // Instead of define here the routes, we import them from routes folder as if it was a middleware
-      this.app.use(this.usersPath, require('../routes/user'))
-    };
+  routes() {
+    /*  The routes can be defined here, but it's much more clear to
+    extract them to routes folder and divede them by category */
+    // this.app.get('/api', (req, res) => { res.json({msg: 'get API'})});
 
-    listen() {
-        this.app.listen(this.port, () => {
-            console.log(`Running server on port ${this.port}`)
-        })
-    }
+    // Instead of define here the routes, we import them from routes folder as if it was a middleware
+    this.app.use(this.usersPath, require('../routes/user'))
+  };
 
-
-
+  listen() { // Listener function and possible feedback
+    this.app.listen(this.port, () => {
+      console.log(`Running server on port ${this.port}`)
+    })
+  };
 }
 
 module.exports = Server;
