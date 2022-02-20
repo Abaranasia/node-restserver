@@ -1,13 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 
+const { dbConnection } = require('../database/config');
 
 class Server {
-
   constructor() {
     this.app = express();
     this.port = process.env.PORT;
     this.usersPath = '/api/users';
+
+    // Connect to database
+    this.connectDB();
 
     //Middlewares - introduces additional functionalities between the req and the res
     this.middlewares();
@@ -15,6 +18,10 @@ class Server {
     //Routes - define the way to enroute the website
     this.routes();
   };
+
+  async connectDB() {
+    await dbConnection();
+  }
 
   middlewares() {
     // For using cors to protect our routes

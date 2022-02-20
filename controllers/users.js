@@ -1,7 +1,6 @@
 
 const { response, request } = require('express');
 
-
 const usersGet = (req = request, res = response) => {
   const query = req.query; // Reading optional query URLparams with Express (already parsed)
 
