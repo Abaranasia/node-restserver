@@ -2,6 +2,8 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 
 const { fieldValidator } = require('../middlewares/fieldValidator');
+const { isValidRole, existingMail } = require('../helpers/db-validators');
+
 const { usersGet,
   usersPost,
   usersPut,
@@ -18,8 +20,10 @@ router.get('/', usersGet);
 router.post('/', [ //midleware validations
   check('name', 'the name field is required').not().isEmpty(),
   check('email', 'the email is not valid').isEmail(),
+  check('email', 'the email is not valid').custom(existingMail),
   check('password', 'password must be longer than 6 characters').isLength({ min: 6 }),
-  check('role', 'Not a valid role').isIn(['ADMIN_ROLE', 'USER_ROLE']),
+  // check('role', 'Not a valid role').isIn(['ADMIN_ROLE', 'USER_ROLE']),
+  check('role').custom(isValidRole), // call to func by reference gets as arg the return of the parent ( same as (res) => isValidRole(res))
   fieldValidator // Express automatically provides req, res and next params
 ], usersPost);
 

@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 
-const userSchema = Schema({
+const UserSchema = Schema({
   name: {
     type: String,
     required: [true, 'Name is a required field']
@@ -32,4 +32,9 @@ const userSchema = Schema({
   },
 });
 
-module.exports = model('User', userSchema);
+UserSchema.methods.toJSON = function () { // Overloaded method to extract useless properties and return cleaner response
+  const { __v, password, ...userProps } = this.toObject();
+  return userProps
+}
+
+module.exports = model('User', UserSchema);
