@@ -25,16 +25,21 @@ router.post('/', [ //midleware validations
   // check('role', 'Not a valid role').isIn(['ADMIN_ROLE', 'USER_ROLE']),
   check('role').custom(isValidRole), // call to func by reference gets as arg the return of the parent ( same as (res) => isValidRole(res))
   fieldValidator // Express automatically provides req, res and next params
-], usersPost);
+], usersPost); // Invokes the controller
 
 router.put('/:id', [
   check('id', 'Not a valid ID').isMongoId(),
   check('id').custom(existsuserById), // user id must exists in order to be updated
   check('role').custom(isValidRole),
-  fieldValidator // this function validats all the data and rejects requests if they are not valid
+  fieldValidator // this function validate all the data and rejects requests if they are not valid
 ], usersPut);
 
-router.delete('/', usersDelete);
+router.delete('/:id', [
+  check('id', 'Not a valid ID').isMongoId(),
+  check('id').custom(existsuserById), // user id must exists in order to be updated
+  fieldValidator // this function validate all the data and rejects requests if they are not valid
+],
+  usersDelete);
 router.patch('/', usersPatch);
 
 module.exports = router;
