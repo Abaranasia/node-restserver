@@ -33,7 +33,8 @@ const UserSchema = Schema({
 });
 
 UserSchema.methods.toJSON = function () { // Overloaded method to extract useless properties and return cleaner response
-  const { __v, password, ...userProps } = this.toObject();
+  const { __v, password, _id, ...userProps } = this.toObject(); // Extracting the fields we don't want to be returned
+  userProps.uid = _id; // changes _id to uid
   return userProps
 }
 

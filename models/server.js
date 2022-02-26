@@ -8,6 +8,7 @@ class Server {
     this.app = express();
     this.port = process.env.PORT;
     this.usersPath = '/api/users';
+    this.authPath = '/api/auth';
 
     // Connect to database
     this.connectDB();
@@ -40,6 +41,7 @@ class Server {
     // this.app.get('/api', (req, res) => { res.json({msg: 'get API'})});
 
     // Instead of define here the routes, we import them from routes folder as if it was a middleware
+    this.app.use(this.authPath, require('../routes/auth'))
     this.app.use(this.usersPath, require('../routes/user'))
   };
 
