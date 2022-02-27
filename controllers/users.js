@@ -72,13 +72,17 @@ const usersPut = async (req = request, res = response) => { // Update data in th
 
 /********** DELETE **********/
 const usersDelete = async (req = request, res = response) => {
-  const { id } = req.params;
+  const { id } = req.params; // uid of the user to be deleted
+
+  // We need to ensure that the user who is performing the deletion is an administrator (ADMIN_ROLE)
+  const authUser = req.user; // uid of the user to execute the delete process
 
   // const user = await User.findByIdAndDelete(id); // Physical delete of a document (not recomended!)
   const user = await User.findByIdAndUpdate(id, { state: false }) // We just update the state to false
 
   res.status(200).json({
-    msg: `The item id=${id} has been removed`
+    msg: `The item id=${id} has been removed`,
+    authUser
   });
 }
 

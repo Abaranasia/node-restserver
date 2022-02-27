@@ -1,7 +1,14 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const { fieldValidator } = require('../middlewares/fieldValidator');
+const {
+  fieldValidator,
+  jwtValidator,
+  roleValidator,
+  hasRole
+} = require('../middlewares');
+
+
 const { isValidRole, existingMail, existsuserById } = require('../helpers/db-validators');
 
 const { usersGet,
@@ -35,6 +42,9 @@ router.put('/:id', [
 ], usersPut);
 
 router.delete('/:id', [
+  jwtValidator,
+  // roleValidator,
+  hasRole('ADMIN_ROLE', 'SALES_ROLE'),
   check('id', 'Not a valid ID').isMongoId(),
   check('id').custom(existsuserById), // user id must exists in order to be updated
   fieldValidator // this function validate all the data and rejects requests if they are not valid
