@@ -2,7 +2,7 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 
 const { fieldValidator } = require('../middlewares/fieldValidator');
-const { login } = require('../controllers/auth');
+const { login, googleSignIn } = require('../controllers/auth');
 
 const router = Router();
 /*  We can define here the router callback, but it's
@@ -14,5 +14,9 @@ router.post('/login', [
   fieldValidator
 ], login);
 
+router.post('/google', [
+  check('id_token', "ID Token is required").not().isEmpty(),
+  fieldValidator
+], googleSignIn);
 
 module.exports = router;
